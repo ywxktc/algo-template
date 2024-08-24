@@ -19,6 +19,14 @@ public:
     build(0, 0, n, v);
   }
 
+  template<typename F>
+  SegmentTree(int n, Combine comb, const F& f)
+    : n(n),
+      comb(comb),
+      info(2 * n - 1) {
+    build(0, 0, n, f);
+  }
+
   Info Get(int l, int r) {
     assert(0 <= l && l < r && r <= n);
     return get(0, 0, n, l, r);
@@ -82,6 +90,21 @@ private:
     int y = x + 2 * (m - l);
     build(x + 1, l, m, v);
     build(y, m, r, v);
+    pull(x, l, r);
+  }
+
+  template<typename F>
+  void build(int x, int l, int r, const F& f) {
+    assert(0 <= x && x < 2 * n - 1);
+    assert(0 <= l && l < r && r <= n);
+    if (r - l == 1) {
+      info[x] = f(l);
+      return;
+    }
+    int m = (l + r) / 2;
+    int y = x + 2 * (m - l);
+    build(x + 1, l, m, f);
+    build(y, m, r, f);
     pull(x, l, r);
   }
 
