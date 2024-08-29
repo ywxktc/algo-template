@@ -19,7 +19,7 @@ struct Fenwick {
   }
 
   // Returns sum of elements in range [0,x)
-  T Sum(int x) {
+  T Get(int x) {
     assert(0 <= x && x <= n);
     T ret{};
     while (x > 0) {
@@ -30,8 +30,8 @@ struct Fenwick {
   }
 
   // Returns sum of elements in range [l, r)
-  T Sum(int l, int r) {
-    return Sum(r) - Sum(l);
+  T Get(int l, int r) {
+    return Get(r) - Get(l);
   }
 
   // Returns maximum index `at` where sum of elements in range [0, at) <= `c`
