@@ -7,6 +7,7 @@ struct Tarjan {
   Tarjan(int _n) : n(_n), adj(_n), dfn(_n, -1), low(_n), comp(_n, -1) {}
 
   void AddEdge(int u, int v) {
+    assert(0 <= u && u < n && 0 <= v && v < n);
     adj[u].push_back(v);
   }
 
@@ -39,7 +40,7 @@ struct Tarjan {
       }
     };
 
-    for (int u = 0; u < n; ++u) {
+    for (int u = 0; u < n; u++) {
       if (dfn[u] == -1) Dfs(u);
     }
     return scc;
@@ -47,7 +48,7 @@ struct Tarjan {
 
   const vector<vector<int>>& Compress() {
     dag.resize(scc.size());
-    for (int u = 0; u < n; ++u) {
+    for (int u = 0; u < n; u++) {
       for (int v : adj[u]) {
         if (comp[u] != comp[v]) {
           dag[comp[u]].push_back(comp[v]);
