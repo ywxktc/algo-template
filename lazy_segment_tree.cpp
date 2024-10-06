@@ -22,7 +22,7 @@ public:
   }
 
   Info Get(int l, int r) {
-    assert(0 <= l && l < r && r <= n);
+    assert(0 <= l && l <= r && r <= n);
     return get(0, 0, n, l, r);
   }
 
@@ -32,7 +32,7 @@ public:
   }
 
   void Modify(int l, int r, const Tag &v) {
-    assert(0 <= l && l < r && r <= n);
+    assert(0 <= l && l <= r && r <= n);
     return modify(0, 0, n, l, r, v);
   }
 
@@ -46,7 +46,7 @@ public:
   }
 
   int FindFirst(int l, int r, const Predict& pred) {
-    assert(0 <= l && l < r && r <= n);
+    assert(0 <= l && l <= r && r <= n);
     return findFirst(0, 0, n, l, r, pred);
   }
 
@@ -55,7 +55,7 @@ public:
   }
 
   int FindLast(int l, int r, const Predict& pred) {
-    assert(0 <= l && l < r && r <= n);
+    assert(0 <= l && l <= r && r <= n);
     return findLast(0, 0, n, l, r, pred);
   }
 
@@ -67,7 +67,7 @@ private:
 
   void build(int x, int l, int r) {
     assert(0 <= x && x < 2 * n - 1);
-    assert(0 <= l && l < r && r <= n);
+    assert(0 <= l && l <= r && r <= n);
     if (r - l == 1) {
       info[x] = Info();
       return;
@@ -82,7 +82,7 @@ private:
   template<typename T>
   void build(int x, int l, int r, const vector<T>& v) {
     assert(0 <= x && x < 2 * n - 1);
-    assert(0 <= l && l < r && r <= n);
+    assert(0 <= l && l <= r && r <= n);
     if (r - l == 1) {
       info[x] = v[l];
       return;
@@ -96,7 +96,7 @@ private:
 
   void push(int x, int l, int r) {
     assert(0 <= x && x < 2 * n - 1);
-    assert(0 <= l && l < r && r <= n);
+    assert(0 <= l && l <= r && r <= n);
     int m = (l + r) / 2;
     int y = x + 2 * (m - l);
     apply(x + 1, l, m, tag[x]);
@@ -106,7 +106,7 @@ private:
 
   void pull(int x, int l, int r) {
     assert(0 <= x && x < 2 * n - 1);
-    assert(0 <= l && l < r && r <= n);
+    assert(0 <= l && l <= r && r <= n);
     int m = (l + r) / 2;
     int y = x + 2 * (m - l);
     info[x] = comb(info[x + 1], info[y]);
@@ -114,15 +114,15 @@ private:
 
   void apply(int x, int l, int r, const Tag& v) {
     assert(0 <= x && x < 2 * n - 1);
-    assert(0 <= l && l < r && r <= n);
+    assert(0 <= l && l <= r && r <= n);
     info[x].Apply(l, r, v);
     tag[x].Apply(l, r, v);
   }
 
   Info get(int x, int l, int r, const int a, const int b) {
     assert(0 <= x && x < 2 * n - 1);
-    assert(0 <= l && l < r && r <= n);
-    assert(0 <= a && a < b && b <= n);
+    assert(0 <= l && l <= r && r <= n);
+    assert(0 <= a && a <= b && b <= n);
     if (a <= l && r <= b) {
       return info[x];
     }
@@ -145,8 +145,8 @@ private:
 
   void modify(int x, int l, int r, const int a, const int b, const Tag& v) {
     assert(0 <= x && x < 2 * n - 1);
-    assert(0 <= l && l < r && r <= n);
-    assert(0 <= a && a < b && b <= n);
+    assert(0 <= l && l <= r && r <= n);
+    assert(0 <= a && a <= b && b <= n);
     if (a <= l && r <= b) {
       apply(x, l, r, v);
       return;
@@ -169,8 +169,8 @@ private:
 
   int findFirst(int x, int l, int r, const int a, const int b, const Predict& pred) {
     assert(0 <= x && x < 2 * n - 1);
-    assert(0 <= l && l < r && r <= n);
-    assert(0 <= a && a < b && b <= n);
+    assert(0 <= l && l <= r && r <= n);
+    assert(0 <= a && a <= b && b <= n);
     if (a <= l && r <= b) {
       if (pred(info[x])) {
         return findFirstKnowingly(x, l, r, pred);
@@ -193,7 +193,7 @@ private:
 
   int findFirstKnowingly(int x, int l, int r, const Predict& pred) {
     assert(0 <= x && x < 2 * n - 1);
-    assert(0 <= l && l < r && r <= n);
+    assert(0 <= l && l <= r && r <= n);
     if (r - l == 1) {
       return l;
     }
@@ -212,8 +212,8 @@ private:
 
   int findLast(int x, int l, int r, const int a, const int b, const Predict& pred) {
     assert(0 <= x && x < 2 * n - 1);
-    assert(0 <= l && l < r && r <= n);
-    assert(0 <= a && a < b && b <= n);
+    assert(0 <= l && l <= r && r <= n);
+    assert(0 <= a && a <= b && b <= n);
     if (a <= l && r <= b) {
       if (pred(info[x])) {
         return findLastKnowningly(x, l, r, pred);
@@ -236,7 +236,7 @@ private:
 
   int findLastKnowingly(int x, int l, int r, const Predict& pred) {
     assert(0 <= x && x < 2 * n - 1);
-    assert(0 <= l && l < r && r <= n);
+    assert(0 <= l && l <= r && r <= n);
     if (r - l == 1) {
       return l;
     }
