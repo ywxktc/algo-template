@@ -1,13 +1,12 @@
-template<int m>
-struct modint {
+template <int m> struct modint {
 private:
   int _v = 0;
-public:
-  modint(): _v(0) {}
 
-  template<typename T>
-  modint(T v) {
-    _v = (int) (v % m);
+public:
+  modint() : _v(0) {}
+
+  template <typename T> modint(T v) {
+    _v = (int)(v % m);
     if (_v < 0) {
       _v += m;
     }
@@ -15,7 +14,7 @@ public:
 
   int val() const { return _v; }
 
-  modint& operator++() {
+  modint &operator++() {
     _v++;
     if (_v >= m) {
       _v -= m;
@@ -23,7 +22,7 @@ public:
     return *this;
   }
 
-  modint& operator--() {
+  modint &operator--() {
     _v--;
     if (_v < 0) {
       _v += m;
@@ -43,7 +42,7 @@ public:
     return res;
   }
 
-  modint& operator+=(const modint& rhs) {
+  modint &operator+=(const modint &rhs) {
     _v += rhs._v;
     if (_v >= m) {
       _v -= m;
@@ -51,7 +50,7 @@ public:
     return *this;
   }
 
-  modint& operator-=(const modint& rhs) {
+  modint &operator-=(const modint &rhs) {
     _v -= rhs._v;
     if (_v < 0) {
       _v += m;
@@ -59,25 +58,25 @@ public:
     return *this;
   }
 
-  modint& operator*=(const modint& rhs) {
+  modint &operator*=(const modint &rhs) {
     long long z = _v;
     z *= rhs._v;
-    _v = (int) (z % m);
+    _v = (int)(z % m);
     return *this;
   }
 
-  modint& operator/=(const modint& rhs) { return *this = *this * rhs.inv(); }
+  modint &operator/=(const modint &rhs) { return *this = *this * rhs.inv(); }
 
   modint operator+() const { return *this; }
 
   modint operator-() const { return modint() - *this; }
 
-  template<typename T>
-  modint pow(T n) const {
+  template <typename T> modint pow(T n) const {
     assert(n >= 0);
     modint x = *this, r = 1;
-    while(n) {
-      if (n & 1) r *= x;
+    while (n) {
+      if (n & 1)
+        r *= x;
       x *= x;
       n >>= 1;
     }
@@ -99,33 +98,44 @@ public:
     return modint(x);
   }
 
-  friend modint operator+(const modint& lhs, const modint& rhs) { return modint(lhs) += rhs; }
+  friend modint operator+(const modint &lhs, const modint &rhs) {
+    return modint(lhs) += rhs;
+  }
 
-  friend modint operator-(const modint& lhs, const modint& rhs) { return modint(lhs) -= rhs; }
+  friend modint operator-(const modint &lhs, const modint &rhs) {
+    return modint(lhs) -= rhs;
+  }
 
-  friend modint operator*(const modint& lhs, const modint& rhs) { return modint(lhs) *= rhs; }
+  friend modint operator*(const modint &lhs, const modint &rhs) {
+    return modint(lhs) *= rhs;
+  }
 
-  friend modint operator/(const modint& lhs, const modint& rhs) { return modint(lhs) /= rhs; }
+  friend modint operator/(const modint &lhs, const modint &rhs) {
+    return modint(lhs) /= rhs;
+  }
 
-  friend bool operator==(const modint& lhs, const modint& rhs) { return lhs._v == rhs._v; }
+  friend bool operator==(const modint &lhs, const modint &rhs) {
+    return lhs._v == rhs._v;
+  }
 
-  friend bool operator!=(const modint& lhs, const modint& rhs) { return lhs._v != rhs._v; }
+  friend bool operator!=(const modint &lhs, const modint &rhs) {
+    return lhs._v != rhs._v;
+  }
 
-  friend istream& operator>>(istream& in, modint<m>& x) {
+  friend istream &operator>>(istream &in, modint<m> &x) {
     long long v;
     cin >> v;
     x = modint(v);
     return in;
   }
-  
-  friend ostream& operator<<(ostream& out, const modint<m>& x) {
+
+  friend ostream &operator<<(ostream &out, const modint<m> &x) {
     out << x._v;
     return out;
   }
 }; // modint
 
-template<typename T>
-struct Binom {
+template <typename T> struct Binom {
 private:
   vector<T> fact;
   vector<T> inv_fact;
@@ -138,7 +148,7 @@ private:
   }
 
 public:
-  T operator() (int m, int n) {
+  T operator()(int m, int n) {
     assert(m >= n);
     adaptive(m);
     return fact[m] * inv_fact[n] * inv_fact[m - n];

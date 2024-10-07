@@ -1,23 +1,17 @@
-template<typename Info, typename Tag>
+template <typename Info, typename Tag>
 struct SegmentTree {
-public:
+ public:
   using Combine = function<Info(const Info&, const Info&)>;
   using Predict = function<bool(const Info&)>;
 
   SegmentTree(int n, Combine comb, const Info& v = Info())
-    : n(n), 
-      comb(comb), 
-      info(2 * n - 1, v), 
-      tag(2 * n - 1) {
+      : n(n), comb(comb), info(2 * n - 1, v), tag(2 * n - 1) {
     build(0, 0, n);
   }
 
-  template<typename T>
+  template <typename T>
   SegmentTree(vector<T>& v, Combine comb)
-    : n(v.size()), 
-      comb(comb), 
-      info(2 * n - 1), 
-      tag(2 * n - 1) {
+      : n(v.size()), comb(comb), info(2 * n - 1), tag(2 * n - 1) {
     build(0, 0, n, v);
   }
 
@@ -31,7 +25,7 @@ public:
     return get(0, 0, n, p, p + 1);
   }
 
-  void Modify(int l, int r, const Tag &v) {
+  void Modify(int l, int r, const Tag& v) {
     assert(0 <= l && l < r && r <= n);
     return modify(0, 0, n, l, r, v);
   }
@@ -41,25 +35,21 @@ public:
     modify(0, 0, n, p, p + 1, v);
   }
 
-  int FindFirst(const Predict& pred) {
-    return findFirst(0, 0, n, 0, n, pred);
-  }
+  int FindFirst(const Predict& pred) { return findFirst(0, 0, n, 0, n, pred); }
 
   int FindFirst(int l, int r, const Predict& pred) {
     assert(0 <= l && l < r && r <= n);
     return findFirst(0, 0, n, l, r, pred);
   }
 
-  int FindLast(const Predict& pred) {
-    return findLast(0, 0, n, 0, n, pred);
-  }
+  int FindLast(const Predict& pred) { return findLast(0, 0, n, 0, n, pred); }
 
   int FindLast(int l, int r, const Predict& pred) {
     assert(0 <= l && l < r && r <= n);
     return findLast(0, 0, n, l, r, pred);
   }
 
-private:
+ private:
   int n;
   vector<Info> info;
   vector<Tag> tag;
@@ -79,7 +69,7 @@ private:
     pull(x, l, r);
   }
 
-  template<typename T>
+  template <typename T>
   void build(int x, int l, int r, const vector<T>& v) {
     assert(0 <= x && x < 2 * n - 1);
     assert(0 <= l && l < r && r <= n);
@@ -167,7 +157,8 @@ private:
     pull(x, l, r);
   }
 
-  int findFirst(int x, int l, int r, const int a, const int b, const Predict& pred) {
+  int findFirst(int x, int l, int r, const int a, const int b,
+                const Predict& pred) {
     assert(0 <= x && x < 2 * n - 1);
     assert(0 <= l && l < r && r <= n);
     assert(0 <= a && a < b && b <= n);
@@ -210,7 +201,8 @@ private:
     return res;
   }
 
-  int findLast(int x, int l, int r, const int a, const int b, const Predict& pred) {
+  int findLast(int x, int l, int r, const int a, const int b,
+               const Predict& pred) {
     assert(0 <= x && x < 2 * n - 1);
     assert(0 <= l && l < r && r <= n);
     assert(0 <= a && a < b && b <= n);
@@ -252,22 +244,13 @@ private:
     pull(x, l, r);
     return res;
   }
-}; // struct SegmentTree
+};  // struct SegmentTree
 
 struct Tag {
-  xxx
-  void Apply(int l, int r, const Tag& v) {
-
-  }
+  xxx void Apply(int l, int r, const Tag& v) {}
 };
 
 struct Info {
-  xxx
-  void Apply(int l, int r, const Tag& v) {
-
-  }
-  Info& operator=(int v) {
-
-    return *this;
-  }
+  xxx void Apply(int l, int r, const Tag& v) {}
+  Info& operator=(int v) { return *this; }
 };

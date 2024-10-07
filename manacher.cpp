@@ -23,8 +23,8 @@ vector<int> manacher(int n, const T &s) {
   }
   return res;
 }
- 
+
 template <typename T>
 vector<int> manacher(const T &s) {
-  return manacher((int) s.size(), s);
+  return manacher((int)s.size(), s);
 }

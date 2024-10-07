@@ -8,7 +8,7 @@ struct Fenwick {
     m = bit_floor(unsigned(n));
     fenw.resize(n);
   }
-  
+
   // Adds value `v` to element at index `x`
   void Add(int x, const T &v) {
     assert(0 <= x && x < n);
@@ -30,9 +30,7 @@ struct Fenwick {
   }
 
   // Returns sum of elements in range [l, r)
-  T Get(int l, int r) {
-    return Get(r) - Get(l);
-  }
+  T Get(int l, int r) { return Get(r) - Get(l); }
 
   // Returns maximum index `at` where sum of elements in range [0, at) <= `c`
   int Select(const T &c) {
