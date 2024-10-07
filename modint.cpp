@@ -138,4 +138,4 @@ struct ModInt {
 };  // ModInt
 
 const int mod = 1e9 + 7;
-using Mint = ModInt<mod>;
+using Z = ModInt<mod>;
