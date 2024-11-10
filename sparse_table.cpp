@@ -21,8 +21,8 @@ class SparseTable {
     }
   }
 
-  // st.get(l, r) returns func(a[l..r])
-  T get(int from, int to) const {
+  // st.Get(l, r) returns func(a[l..r])
+  T Get(int from, int to) const {
     assert(0 <= from && from <= to && to <= n - 1);
     int lg = 32 - __builtin_clz(to - from + 1) - 1;
     return func(mat[lg][from], mat[lg][to - (1 << lg) + 1]);
