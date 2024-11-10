@@ -7,16 +7,16 @@ struct DSU {
     iota(p.begin(), p.end(), 0);
   }
 
-  int find(int x) {
+  int Find(int x) {
     while (x != p[x]) {
       x = p[x] = p[p[x]];
     }
     return x;
   }
 
-  bool merge(int x, int y) {
-    x = find(x);
-    y = find(y);
+  bool Merge(int x, int y) {
+    x = Find(x);
+    y = Find(y);
     if (x != y) {
       p[x] = y;
       return true;
