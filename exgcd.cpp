@@ -5,7 +5,7 @@ T exgcd(T a, T b, T &x, T &y) {
     y = 0;
     return a;
   }
-  T g = exgcd(b, a % b, y, x); // 递归调用
+  T g = exgcd(b, a % b, y, x);
   y -= (a / b) * x;
   return g;
 }
