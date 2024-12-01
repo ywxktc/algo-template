@@ -2,7 +2,7 @@
 using namespace std;
 
 #ifdef LOCAL
-#include "algo-template/debug.h"
+#include "algo/debug.h"
 #else
 #define debug(...) 42
 #endif
