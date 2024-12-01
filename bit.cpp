@@ -37,9 +37,14 @@ long long pow2(int x) {
   return res;
 }
 
-// 计算存储x需要多少位bit,等价于 1 + ceil(log2(x))
+// 计算存储x需要多少位bit,等价于 1 + floor(log2(x))
 // 例如x=12(1100)，返回4
 bit_width<u64>(x)
 // 计算最大的y，使得2^y<=x
 // 例如x=12(1100), 返回8
 bit_floor<u64>(x)
+
+// 返回 floor(log2(x)) 例如 12(1100) 返回 3
+int lg(i64 x) {
+  return bit_width<u64>(x) - 1;
+}
