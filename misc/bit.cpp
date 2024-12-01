@@ -12,39 +12,26 @@ __builtin_clz(6) = 29
 
 // 求lowbit
 template<typename T>
-T lowbit(T x) {
-  return x & -x;
-}
-
-// 求log2(x)向下取整
-int floor_log2(long long x) {
-  int ret = 0;
-  while (x > 0) {
-    x >>= 1;
-    ret++;
-  }
-  return ret;
-}
+T lowbit(T x) { return x & -x; }
 
 // 求2^x, x>=0
-long long pow2(int x) {
-  assert(x >= 0);
-  long long res = 1;
-  while (x > 0) {
-    res *= 2;
-    x--;
-  }
-  return res;
-}
+i64 pow2(int x) { return (1LL << x); }
 
 // 计算存储x需要多少位bit,等价于 1 + floor(log2(x))
 // 例如x=12(1100)，返回4
 bit_width<u64>(x)
+
 // 计算最大的y，使得2^y<=x
 // 例如x=12(1100), 返回8
 bit_floor<u64>(x)
 
-// 返回 floor(log2(x)) 例如 12(1100) 返回 3
-int lg(i64 x) {
-  return bit_width<u64>(x) - 1;
-}
+// 返回floor(log2(x))
+// 例如 12(1100) 返回 3
+int lg(u64 x) { return bit_width<u64>(x) - 1; }
+
+// 返回1的数量,
+// 例如12(1100)返回2
+popcount<u64>(x);
+
+// c++20后的bit函数
+// ref: https://learn.microsoft.com/zh-cn/cpp/standard-library/bit-functions?view=msvc-170
