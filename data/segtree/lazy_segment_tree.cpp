@@ -247,10 +247,25 @@ struct SegmentTree {
 };  // struct SegmentTree
 
 struct Tag {
-  xxx void Apply(int l, int r, const Tag& v) {}
+  // TODO
+  void Apply(int l, int r, const Tag& v) {
+    // TODO
+  }
 };
 
 struct Info {
-  xxx void Apply(int l, int r, const Tag& v) {}
-  Info& operator=(int v) { return *this; }
+  i64 val = 0;
+
+  Info() : val(0) {}
+
+  Info(i64 val) : val(val) {}
+  
+  Info& operator=(const Info& v) {
+    // TODO
+    return *this;
+  }
+
+  void Apply(int l, int r, const Tag& v) {
+    // TODO
+  }
 };
