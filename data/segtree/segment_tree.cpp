@@ -4,28 +4,26 @@ struct SegmentTree {
   using Combine = function<Info(const Info&, const Info&)>;
   using Predict = function<bool(const Info&)>;
 
-  SegmentTree(int n, Combine comb, const Info& v = Info())
-      : n(n), comb(comb), info(2 * n - 1, v) {
+  // E.g.
+  // SegmentTree<Info> seg(n, Combine);
+  SegmentTree(int n, Combine comb, const Info& v = Info()) : n(n), comb(comb), info(2 * n - 1, v) {
     build(0, 0, n);
   }
 
-  template <typename T>
-  SegmentTree(vector<T>& v, Combine comb)
-      : n(v.size()), comb(comb), info(2 * n - 1) {
+  // E.g.
+  // vector<Info> values = { Info(1), Info(2), Info(3), Info(4), Info(5) };
+  // SegmentTree<Info> seg(values, Combine);
+  SegmentTree(vector<Info>& v, Combine comb) : n(v.size()), comb(comb), info(2 * n - 1) {
     build(0, 0, n, v);
   }
 
-  template <typename F>
-  SegmentTree(int n, Combine comb, const F& f)
-      : n(n), comb(comb), info(2 * n - 1) {
-    build(0, 0, n, f);
-  }
-
+  // Get [l, r)
   Info Get(int l, int r) {
     assert(0 <= l && l < r && r <= n);
     return get(0, 0, n, l, r);
   }
 
+  // Get [p]
   Info Get(int p) {
     assert(0 <= p && p < n);
     return get(0, 0, n, p, p + 1);
@@ -68,8 +66,7 @@ struct SegmentTree {
     pull(x, l, r);
   }
 
-  template <typename T>
-  void build(int x, int l, int r, const vector<T>& v) {
+  void build(int x, int l, int r, const vector<Info>& v) {
     assert(0 <= x && x < 2 * n - 1);
     assert(0 <= l && l < r && r <= n);
     if (r - l == 1) {
@@ -80,21 +77,6 @@ struct SegmentTree {
     int y = x + 2 * (m - l);
     build(x + 1, l, m, v);
     build(y, m, r, v);
-    pull(x, l, r);
-  }
-
-  template <typename F>
-  void build(int x, int l, int r, const F& f) {
-    assert(0 <= x && x < 2 * n - 1);
-    assert(0 <= l && l < r && r <= n);
-    if (r - l == 1) {
-      info[x] = f(l);
-      return;
-    }
-    int m = (l + r) / 2;
-    int y = x + 2 * (m - l);
-    build(x + 1, l, m, f);
-    build(y, m, r, f);
     pull(x, l, r);
   }
 
@@ -234,10 +216,21 @@ struct SegmentTree {
 
 struct Info {
   i64 val = 0;
-  Info& operator=(int v) & {
-    val = v;
+  
+  Info() : val(0) {}
+  
+  Info(i64 val) : val(val) {}
+  
+  Info& operator=(const Info& info) & {
+    val = info.val;
     return *this;
   }
 };
 
-Info Combine(const Info& a, const Info& b) { return Info{a.val + b.val}; }
+Info Combine(const Info& a, const Info& b) {
+  Info c;
+  c.val = max(a.val, b.val);
+  return c;
+}
+
+
