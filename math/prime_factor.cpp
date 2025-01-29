@@ -1,3 +1,4 @@
+// 最坏复杂度：O(sqrt(n))，最优复杂度 O(log(n))
 template<typename T>
 vector<T> GetPrimeFactors(T x) {
   vector<T> fact;
