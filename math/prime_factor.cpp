@@ -1,3 +1,4 @@
+// 最坏复杂度：O(sqrt(n))，最优复杂度 O(log(n))
 template<typename T>
 vector<T> GetPrimeFactors(T x) {
   vector<T> fact;
@@ -11,6 +12,41 @@ vector<T> GetPrimeFactors(T x) {
     fact.push_back(x);
   }
   return fact;
+}
+
+// -----------------------
+/* 预计算范围内的最小素因子，方便在log(n)时间内进行素因式分解 */
+const int N = 1e7;
+int mp[N + 1];
+vector<int> primes;
+void precalc() {
+  for (int i = 2; i <= N; i++) {
+    if (mp[i] == 0) {
+      mp[i] = i;
+      primes.push_back(i);
+    }
+    for (auto p : primes) {
+      if (i * p > N) {
+        break;
+      }
+      mp[i * p] = p;
+      if (i % p == 0) {
+        break;
+      }
+    }
+  }
+}
+
+// 复杂度=素因子数量 O(log(n))
+vector<int> GetPrimeFactors(int x) {
+  vector<int> facts;
+  while (x > 1) {
+    if (facts.empty() || facts.back() != mp[x]) {
+      facts.push_back(mp[x]);
+    }
+    x /= mp[x];
+  }
+  return facts;
 }
 
 
