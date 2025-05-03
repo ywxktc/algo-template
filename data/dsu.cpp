@@ -8,6 +8,7 @@ struct DSU {
   }
 
   int Find(int x) {
+    assert(0 <= x && x < n);
     while (x != p[x]) {
       x = p[x] = p[p[x]];
     }
@@ -15,6 +16,8 @@ struct DSU {
   }
 
   bool Merge(int x, int y) {
+    assert(0 <= x && x < n);
+    assert(0 <= y && y < n);
     x = Find(x);
     y = Find(y);
     if (x != y) {
