@@ -68,3 +68,32 @@ vector<int> FindCircle(vector<vector<int>> &g) {
   }
   return {};
 }
+
+/*
+    todo: 出度=入度=1的情况下简单的找环算法
+
+    vector<int> cycle(n);
+    vector<int> vis(n);
+    for (int i = 0; i < n; i++) {
+      if (vis[i]) {
+        continue;
+      }
+
+      vector<int> path;
+      int j = i;
+      do {
+        vis[j] = true;
+        path.push_back(j);
+        j = r[j];
+      } while (!vis[j]);
+
+      if (find(path.begin(), path.end(), j) != path.end()) {
+        int x = j;
+        do {
+          cycle[x] = true;
+          x = r[x];
+        } while (x != j);
+      }
+    }
+
+*/
