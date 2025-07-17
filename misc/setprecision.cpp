@@ -1,1 +1,6 @@
-cout << fixed << setprecision(16);
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+  cout << fixed << setprecision(16);
+}

@@ -1,4 +1,7 @@
-vector<int> Topsort(vector<vector<int>>& dag) {
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> Topsort(vector<vector<int>> &dag) {
   int n = dag.size();
   vector<int> deg(n, 0);
   for (int u = 0; u < n; u++) {
@@ -28,7 +31,7 @@ vector<int> Topsort(vector<vector<int>>& dag) {
   return ret;
 }
 
-stack<int> Topsort(vector<vector<int>>& dag) {
+stack<int> TopsortStk(vector<vector<int>> &dag) {
   int n = dag.size();
   vector<bool> vis(n);
   stack<int> stk;
@@ -42,11 +45,11 @@ stack<int> Topsort(vector<vector<int>>& dag) {
       }
     }
     stk.push(u);
-  }
+  };
   for (int u = 0; u < n; u++) {
     if (!vis[u]) {
       Dfs(u);
     }
   }
-  return stack;
+  return stk;
 }

@@ -1,14 +1,17 @@
-template <typename T, class F = function<T(const T&, const T&)>>
+#include <bits/stdc++.h>
+using namespace std;
+
+template <typename T, class F = function<T(const T &, const T &)>>
 class SparseTable {
- public:
+public:
   int n;
-  vector<vector<T>> mat;  // mat[j][i] = func(a[i, i+(1<<j)-1])
+  vector<vector<T>> mat; // mat[j][i] = func(a[i, i+(1<<j)-1])
   F func;
 
   // Usage:
   // vector<int> a(n);
   // SparseTable st(a, [&](int x, int y) { return max(x, y); });
-  SparseTable(const vector<T>& a, const F& f) : func(f) {
+  SparseTable(const vector<T> &a, const F &f) : func(f) {
     n = static_cast<int>(a.size());
     int max_log = 32 - __builtin_clz(n);
     mat.resize(max_log);

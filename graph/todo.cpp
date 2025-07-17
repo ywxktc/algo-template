@@ -1,11 +1,14 @@
-template<typename T>
+#include <bits/stdc++.h>
+using namespace std;
+
+template <typename T>
 struct Edge {
   int from;
   int to;
   T cost;
 };
 
-template<typename T>
+template <typename T>
 struct Graph {
   int n = 0;
   int m = 0;
@@ -17,14 +20,14 @@ struct Graph {
   virtual void AddEdge(int from, int to, T cost) = 0;
 };
 
-template<typename T>
+template <typename T>
 struct DirectedGraph : public Graph<T> {
   using Graph<T>::n;
   using Graph<T>::m;
   using Graph<T>::edges;
   using Graph<T>::g;
 
-  DirectedGraph(int _n) : Graph(_n) {}
+  DirectedGraph(int _n) : Graph<T>(_n) {}
 
   void AddEdge(int from, int to, T cost = 1) override {
     edges.push_back({from, to, cost});
@@ -33,14 +36,14 @@ struct DirectedGraph : public Graph<T> {
   }
 };
 
-template<typename T>
+template <typename T>
 struct UndirectedGraph : public Graph<T> {
   using Graph<T>::n;
   using Graph<T>::m;
   using Graph<T>::edges;
   using Graph<T>::g;
 
-  UndirectedGraph(int _n) : Graph(_n) {}
+  UndirectedGraph(int _n) : Graph<T>(_n) {}
 
   void AddEdge(int from, int to, T cost = 1) override {
     edges.push_back({from, to, cost});

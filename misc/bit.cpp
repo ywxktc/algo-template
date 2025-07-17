@@ -1,37 +1,70 @@
-// 位运算
+#pragma once
+#include <bit> // ✅ C++20 位运算函数
+#include <bits/stdc++.h>
+using namespace std;
 
-// 求有多少位bit
-__builtin_popcount(7) = 3
+// ============================
+// 🧠 位运算工具（C++20 标准）
+// ============================
 
-// 前导零
-__builtin_clz(6) = 29
+// ✅ 返回 2^x，x ≥ 0
+constexpr int64_t pow2(int x) {
+  return 1LL << x;
+}
 
-// 最高位1所在的权重
-31 - builtin_clz(x)
-63 - builtin_clz(x)
+// ✅ 返回最低位的 1（lowbit）
+template <typename T>
+constexpr T lowbit(T x) {
+  return x & -x;
+}
 
-// 求lowbit
-template<typename T>
-T lowbit(T x) { return x & -x; }
+// ✅ 返回二进制中 1 的个数
+template <typename T>
+constexpr int popcount(T x) {
+  return std::popcount(x);
+  // return __builtin_popcountll(x); // ← 可选：GCC/Clang 内建版本
+}
 
-// 求2^x, x>=0
-i64 pow2(int x) { return (1LL << x); }
+// ✅ 返回 x 所需的 bit 位数（即 bit_width）
+// e.g. x = 12 (1100) → 4
+template <typename T>
+constexpr int bit_width(T x) {
+  return std::bit_width(x);
+}
 
-// 计算存储x需要多少位bit,等价于 1 + floor(log2(x))
-// 例如x=12(1100)，返回4
-bit_width<u64>(x)
+// ✅ 返回 floor(log2(x))
+// e.g. x = 12 → 3
+template <typename T>
+constexpr int lg(T x) {
+  return bit_width(x) - 1;
+}
 
-// 计算最大的y，使得2^y<=x
-// 例如x=12(1100), 返回8
-bit_floor<u64>(x)
+// ✅ 返回最大不超过 x 的 2 的幂（bit_floor）
+// e.g. x = 12 → 8
+template <typename T>
+constexpr T bit_floor(T x) {
+  return std::bit_floor(x);
+}
 
-// 返回floor(log2(x))
-// 例如 12(1100) 返回 3
-int lg(u64 x) { return bit_width<u64>(x) - 1; }
+// ✅ 返回最小不小于 x 的 2 的幂（bit_ceil）
+// e.g. x = 12 → 16
+template <typename T>
+constexpr T bit_ceil(T x) {
+  return std::bit_ceil(x);
+}
 
-// 返回1的数量,
-// 例如12(1100)返回2
-popcount<u64>(x);
+// ✅ 返回前导零数量（leading zero count）
+// e.g. 0000...1100 → 28
+template <typename T>
+constexpr int leading_zeros(T x) {
+  return std::countl_zero(x);
+  // return __builtin_clzll(x); // ← 可选 fallback
+}
 
-// c++20后的bit函数
-// ref: https://learn.microsoft.com/zh-cn/cpp/standard-library/bit-functions?view=msvc-170
+// ✅ 返回末尾零数量（trailing zero count）
+// e.g. 0000...1000 → 3
+template <typename T>
+constexpr int trailing_zeros(T x) {
+  return std::countr_zero(x);
+  // return __builtin_ctzll(x); // ← 可选 fallback
+}

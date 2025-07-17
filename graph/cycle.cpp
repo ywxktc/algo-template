@@ -1,9 +1,12 @@
+#include <bits/stdc++.h>
+using namespace std;
+
 // 无向图找环
 vector<int> FindCircle(vector<vector<int>> &g) {
   int n = g.size();
   vector<int> cycle, stk, vis(n, 0);
   function<bool(int, int)> Dfs = [&](int u, int p) -> bool {
-    vis[u] = 1;  // 标记为已访问
+    vis[u] = 1; // 标记为已访问
     stk.push_back(u);
     for (int v : g[u]) {
       if (v == p) {
@@ -34,11 +37,11 @@ vector<int> FindCircle(vector<vector<int>> &g) {
 }
 
 // 有向图找环
-vector<int> FindCircle(vector<vector<int>> &g) {
+vector<int> FindDAGCircle(vector<vector<int>> &g) {
   int n = g.size();
   vector<int> cycle, stk, vis(n, 0);
   function<bool(int)> Dfs = [&](int u) -> bool {
-    vis[u] = 1;  // 标记为正在访问
+    vis[u] = 1; // 标记为正在访问
     stk.push_back(u);
     for (int v : g[u]) {
       if (vis[v] == 2) {
@@ -55,7 +58,7 @@ vector<int> FindCircle(vector<vector<int>> &g) {
         return true;
       }
     }
-    vis[u] = 2;  // 标记已访问
+    vis[u] = 2; // 标记已访问
     stk.pop_back();
     return false;
   };

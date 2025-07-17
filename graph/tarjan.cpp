@@ -1,7 +1,10 @@
+#include <bits/stdc++.h>
+using namespace std;
+
 struct Tarjan {
-  int n = 0; // 顶点数量
-  vector<vector<int>> adj; // 邻接表
-  vector<int> dfn, low, comp; // 时间戳, low-link 值, 强连通分量编号
+  int n = 0;                    // 顶点数量
+  vector<vector<int>> adj;      // 邻接表
+  vector<int> dfn, low, comp;   // 时间戳, low-link 值, 强连通分量编号
   vector<vector<int>> scc, dag; // 强连通分量, 压缩图
 
   Tarjan(int _n) : n(_n), adj(_n), dfn(_n, -1), low(_n), comp(_n, -1) {}
@@ -11,7 +14,7 @@ struct Tarjan {
     adj[u].push_back(v);
   }
 
-  const vector<vector<int>>& FindSCC() {
+  const vector<vector<int>> &FindSCC() {
     int t = 0;
     stack<int> stk;
     vector<bool> in_stk(n);
@@ -35,18 +38,20 @@ struct Tarjan {
           in_stk[v] = false;
           comp[v] = scc.size() - 1;
           scc.back().push_back(v);
-          if (v == u) break;
+          if (v == u)
+            break;
         }
       }
     };
 
     for (int u = 0; u < n; u++) {
-      if (dfn[u] == -1) Dfs(u);
+      if (dfn[u] == -1)
+        Dfs(u);
     }
     return scc;
   }
 
-  const vector<vector<int>>& Compress() {
+  const vector<vector<int>> &Compress() {
     dag.resize(scc.size());
     for (int u = 0; u < n; u++) {
       for (int v : adj[u]) {

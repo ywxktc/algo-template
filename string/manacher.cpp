@@ -1,3 +1,6 @@
+#include <bits/stdc++.h>
+using namespace std;
+
 template <typename T>
 vector<int> manacher(int n, const T &s) {
   if (n == 0) {

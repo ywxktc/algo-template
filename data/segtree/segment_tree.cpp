@@ -1,19 +1,23 @@
+#include <bits/stdc++.h>
+using namespace std;
+using i64 = long long;
+
 template <typename Info>
 struct SegmentTree {
- public:
-  using Combine = function<Info(const Info&, const Info&)>;
-  using Predict = function<bool(const Info&)>;
+public:
+  using Combine = function<Info(const Info &, const Info &)>;
+  using Predict = function<bool(const Info &)>;
 
   // E.g.
   // SegmentTree<Info> seg(n, Combine);
-  SegmentTree(int n, Combine comb, const Info& v = Info()) : n(n), comb(comb), info(2 * n - 1, v) {
+  SegmentTree(int n, Combine comb, const Info &v = Info()) : n(n), comb(comb), info(2 * n - 1, v) {
     build(0, 0, n);
   }
 
   // E.g.
   // vector<Info> values = { Info(1), Info(2), Info(3), Info(4), Info(5) };
   // SegmentTree<Info> seg(values, Combine);
-  SegmentTree(vector<Info>& v, Combine comb) : n(v.size()), comb(comb), info(2 * n - 1) {
+  SegmentTree(vector<Info> &v, Combine comb) : n(v.size()), comb(comb), info(2 * n - 1) {
     build(0, 0, n, v);
   }
 
@@ -29,26 +33,26 @@ struct SegmentTree {
     return get(0, 0, n, p, p + 1);
   }
 
-  void Modify(const int p, const Info& v) {
+  void Modify(const int p, const Info &v) {
     assert(0 <= p && p < n);
     modify(0, 0, n, p, v);
   }
 
-  int FindFirst(const Predict& pred) { return findFirst(0, 0, n, 0, n, pred); }
+  int FindFirst(const Predict &pred) { return findFirst(0, 0, n, 0, n, pred); }
 
-  int FindFirst(int l, int r, const Predict& pred) {
+  int FindFirst(int l, int r, const Predict &pred) {
     assert(0 <= l && l < r && r <= n);
     return findFirst(0, 0, n, l, r, pred);
   }
 
-  int FindLast(const Predict& pred) { return findLast(0, 0, n, 0, n, pred); }
+  int FindLast(const Predict &pred) { return findLast(0, 0, n, 0, n, pred); }
 
-  int FindLast(int l, int r, const Predict& pred) {
+  int FindLast(int l, int r, const Predict &pred) {
     assert(0 <= l && l < r && r <= n);
     return findLast(0, 0, n, l, r, pred);
   }
 
- private:
+private:
   int n;
   vector<Info> info;
   Combine comb;
@@ -66,7 +70,7 @@ struct SegmentTree {
     pull(x, l, r);
   }
 
-  void build(int x, int l, int r, const vector<Info>& v) {
+  void build(int x, int l, int r, const vector<Info> &v) {
     assert(0 <= x && x < 2 * n - 1);
     assert(0 <= l && l < r && r <= n);
     if (r - l == 1) {
@@ -111,7 +115,7 @@ struct SegmentTree {
     return res;
   }
 
-  void modify(int x, int l, int r, const int p, const Info& v) {
+  void modify(int x, int l, int r, const int p, const Info &v) {
     assert(0 <= x && x < 2 * n - 1);
     assert(0 <= l && l < r && r <= n);
     assert(0 <= p && p < n);
@@ -130,7 +134,7 @@ struct SegmentTree {
   }
 
   int findFirst(int x, int l, int r, const int a, const int b,
-                const Predict& pred) {
+                const Predict &pred) {
     assert(0 <= x && x < 2 * n - 1);
     assert(0 <= l && l < r && r <= n);
     assert(0 <= a && a < b && b <= n);
@@ -153,7 +157,7 @@ struct SegmentTree {
     return res;
   }
 
-  int findFirstKnowingly(int x, int l, int r, const Predict& pred) {
+  int findFirstKnowingly(int x, int l, int r, const Predict &pred) {
     assert(0 <= x && x < 2 * n - 1);
     assert(0 <= l && l < r && r <= n);
     if (r - l == 1) {
@@ -172,7 +176,7 @@ struct SegmentTree {
   }
 
   int findLast(int x, int l, int r, const int a, const int b,
-               const Predict& pred) {
+               const Predict &pred) {
     assert(0 <= x && x < 2 * n - 1);
     assert(0 <= l && l < r && r <= n);
     assert(0 <= a && a < b && b <= n);
@@ -195,7 +199,7 @@ struct SegmentTree {
     return res;
   }
 
-  int findLastKnowingly(int x, int l, int r, const Predict& pred) {
+  int findLastKnowingly(int x, int l, int r, const Predict &pred) {
     assert(0 <= x && x < 2 * n - 1);
     assert(0 <= l && l < r && r <= n);
     if (r - l == 1) {
@@ -212,25 +216,23 @@ struct SegmentTree {
     pull(x, l, r);
     return res;
   }
-};  // SegmentTree
+}; // SegmentTree
 
 struct Info {
   i64 val = 0;
-  
+
   Info() : val(0) {}
-  
+
   Info(i64 val) : val(val) {}
-  
-  Info& operator=(const Info& info) & {
+
+  Info &operator=(const Info &info) & {
     val = info.val;
     return *this;
   }
 };
 
-Info Combine(const Info& a, const Info& b) {
+Info Combine(const Info &a, const Info &b) {
   Info c;
   c.val = max(a.val, b.val);
   return c;
 }
-
-

@@ -1,3 +1,6 @@
+#include <bits/stdc++.h>
+using namespace std;
+
 // 计算字符串 s 的 Z 函数（Z-array）
 // Z[i] 表示 s[i..n-1] 与 s[0..n-1] 的最长公共前缀长度
 // 时间复杂度为 O(n)
