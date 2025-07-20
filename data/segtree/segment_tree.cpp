@@ -211,7 +211,7 @@ struct SegmentTree {
     assert(0 <= a && a < b && b <= n);
     if (a <= l && r <= b) {
       if (pred(infos[x])) {
-        return findLastKnowningly(x, l, r, pred);
+        return FindLastKnowingly(x, l, r, pred);
       }
       return n;
     }
@@ -248,105 +248,73 @@ struct SegmentTree {
 };  // SegmentTree
 
 struct Info {
-  i64 val = 0;
+  i64 mx = 0;
   Info() = default;
   Info &operator=(const Info &info) & = default;
-  Info(i64 val) {
-    this->val = val;
+  Info(i64 mx) {
+    this->mx = mx;
   }
   string String() const {
-    return format("{{val={}}}", this->val);
+    return format("{{mx={}}}", this->mx);
   }
 };
 
 Info Combine(const Info &a, const Info &b) {
   Info c;
-  c.val = max(a.val, b.val);
+  c.mx = max(a.mx, b.mx);
   return c;
 }
 
 // g++ -std=c++20 segment_tree.cpp -o segment_tree.exe && ./segment_tree.exe  && rm segment_tree.exe
 int main() {
   {
-    // [1] 默认值初始化, 每个节点都是默认值
-    cout << "===== Test 1: Default Value Initialization =====\n";
-    int n = 10;
-    SegmentTree<Info> seg(n, Combine);
+    cout << "===== Test 1: Build with Vector & Print Tree =====\n";
+    vector<Info> values = {5, 3, 8, 6, 1, 4, 7, 2};
+    SegmentTree<Info> seg(values, Combine);
+    cout << seg.String() << "\n\n";
+  }
+
+  {
+    cout << "===== Test 2: Range Max Query =====\n";
+    vector<Info> values = {5, 3, 8, 6, 1, 4, 7, 2};
+    SegmentTree<Info> seg(values, Combine);
+    cout << "[0, 4) max = " << seg.Get(0, 4).String() << "\n";  // 8
+    cout << "[4, 8) max = " << seg.Get(4, 8).String() << "\n";  // 7
+    cout << "[2, 5) max = " << seg.Get(2, 5).String() << "\n";  // 8
+    cout << "\n";
+  }
+
+  {
+    cout << "===== Test 3: Modify and Re-query =====\n";
+    vector<Info> values = {5, 3, 8, 6, 1, 4, 7, 2};
+    SegmentTree<Info> seg(values, Combine);
+
+    seg.Modify(2, Info(10));  // 将原本的 8 改成 10
+    cout << "After Modify(2, 10):\n";
     cout << seg.String() << "\n";
+    cout << "[0, 4) max = " << seg.Get(0, 4).String() << "\n";  // 应该变成 10
+    cout << "[1, 3) max = " << seg.Get(1, 3).String() << "\n";  // 应该是 10
+    cout << "\n";
   }
 
   {
-    // [2] 数组初始化
-    cout << "===== Test 2: Initialization with Vector =====\n";
-    int n = 10;
-    vector<Info> infos(n);
-    for (int i = 0; i < n; i++) {
-      infos[i] = Info(i);
-    }
-    SegmentTree<Info> seg(infos, Combine);
-    cout << seg.String() << "\n";
+    cout << "===== Test 4: Find First Element >= 7 =====\n";
+    vector<Info> values = {1, 2, 3, 7, 5, 9, 6, 4};
+    SegmentTree<Info> seg(values, Combine);
+    auto pred = [](const Info &x) { return x.mx >= 7; };
+    int first = seg.FindFirst(pred);
+    cout << "First index with val >= 7: " << first << "\n";  // 应该是 3
+    cout << "\n";
   }
 
   {
-    // [3] Combine 函数支持匿名函数
-    cout << "===== Test 3: Anonymous Combine Function =====\n";
-    int n = 10;
-    SegmentTree<Info> seg(n, [&](const Info &x, const Info &y) -> Info {
-      Info c;
-      c.val = x.val + y.val;
-      return c;
-    });
-    cout << seg.String() << "\n";
-  }
-
-  {
-    // [4] 获取区间 [1,6) 结果
-    cout << "===== Test 4: Query Range [1,6) =====\n";
-    int n = 10;
-    vector<Info> infos(n);
-    for (int i = 0; i < n; i++) {
-      infos[i] = Info(i);
-    }
-    SegmentTree<Info> seg(infos, [&](const Info &x, const Info &y) -> Info {
-      Info c;
-      c.val = x.val + y.val;
-      return c;
-    });
-    auto info = seg.Get(1, 6);
-    cout << info.String() << "\n";
-  }
-
-  {
-    // [5] 修改下标为 3 的元素
-    cout << "===== Test 5: Modify Element at Index 3 =====\n";
-    int n = 10;
-    vector<Info> infos(n);
-    for (int i = 0; i < n; i++) {
-      infos[i] = Info(i);
-    }
-    SegmentTree<Info> seg(infos, [&](const Info &x, const Info &y) -> Info {
-      Info c;
-      c.val = x.val + y.val;
-      return c;
-    });
-    seg.Modify(3, Info(9));
-    cout << seg.Get(3).String() << "\n";
-  }
-
-  {
-    // [6] 打印线段树结构
-    cout << "===== Test 6: Print Segment Tree Structure =====\n";
-    int n = 10;
-    vector<Info> infos(n);
-    for (int i = 0; i < n; i++) {
-      infos[i] = Info(i);
-    }
-    SegmentTree<Info> seg(infos, [&](const Info &x, const Info &y) -> Info {
-      Info c;
-      c.val = x.val + y.val;
-      return c;
-    });
-    cout << seg.String() << "\n";
+    cout << "===== Test 5: Find Last Element >= 7 =====\n";
+    vector<Info> values = {1, 2, 3, 7, 5, 9, 6, 4};
+    SegmentTree<Info> seg(values, Combine);
+    auto pred = [](const Info &x) { return x.mx >= 7; };
+    int last = seg.FindLast(pred);
+    cout << "Last index with val >= 7: " << last << "\n";  // 应该是 5
+    cout << "\n";
   }
 
   return 0;
