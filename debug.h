@@ -94,6 +94,10 @@ void Print(const T &x) {
       first = false;
     }
     cerr << '}';
+  } else if constexpr (requires { to_string(x); }) {
+    cerr << to_string(x);
+  } else if constexpr (requires { x.String(); }) {
+    cerr << x.String();
   } else {
     cerr << x;
   }
