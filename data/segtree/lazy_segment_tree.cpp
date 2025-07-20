@@ -1,275 +1,297 @@
 #include <bits/stdc++.h>
+
+#include <format>
 using namespace std;
 using i64 = long long;
 
 template <typename Info, typename Tag>
 struct SegmentTree {
-public:
+ public:
   using Combine = function<Info(const Info &, const Info &)>;
   using Predict = function<bool(const Info &)>;
 
   SegmentTree(int n, Combine comb, const Info &v = Info())
-      : n(n), comb(comb), info(2 * n - 1, v), tag(2 * n - 1) {
-    build(0, 0, n);
+      : n(n), comb(comb), infos(2 * n - 1, v), tags(2 * n - 1) {
+    Build(0, 0, n);
   }
 
   template <typename T>
   SegmentTree(vector<T> &v, Combine comb)
-      : n(v.size()), comb(comb), info(2 * n - 1), tag(2 * n - 1) {
-    build(0, 0, n, v);
+      : n(v.size()), comb(comb), infos(2 * n - 1), tags(2 * n - 1) {
+    Build(0, 0, n, v);
   }
 
   Info Get(int l, int r) {
     assert(0 <= l && l < r && r <= n);
-    return get(0, 0, n, l, r);
+    return Get(0, 0, n, l, r);
   }
 
   Info Get(int p) {
     assert(0 <= p && p < n);
-    return get(0, 0, n, p, p + 1);
+    return Get(0, 0, n, p, p + 1);
   }
 
   void Modify(int l, int r, const Tag &v) {
     assert(0 <= l && l < r && r <= n);
-    return modify(0, 0, n, l, r, v);
+    Modify(0, 0, n, l, r, v);
   }
 
-  void Modify(const int p, const Tag &v) {
+  void Modify(int p, const Tag &v) {
     assert(0 <= p && p < n);
-    modify(0, 0, n, p, p + 1, v);
+    Modify(0, 0, n, p, p + 1, v);
   }
 
-  int FindFirst(const Predict &pred) { return findFirst(0, 0, n, 0, n, pred); }
+  int FindFirst(const Predict &pred) {
+    return FindFirst(0, 0, n, 0, n, pred);
+  }
 
   int FindFirst(int l, int r, const Predict &pred) {
     assert(0 <= l && l < r && r <= n);
-    return findFirst(0, 0, n, l, r, pred);
+    return FindFirst(0, 0, n, l, r, pred);
   }
 
-  int FindLast(const Predict &pred) { return findLast(0, 0, n, 0, n, pred); }
+  int FindLast(const Predict &pred) {
+    return FindLast(0, 0, n, 0, n, pred);
+  }
 
   int FindLast(int l, int r, const Predict &pred) {
     assert(0 <= l && l < r && r <= n);
-    return findLast(0, 0, n, l, r, pred);
+    return FindLast(0, 0, n, l, r, pred);
   }
 
-private:
+  string String(bool wrap = true) const {
+    ostringstream oss;
+
+    function<void(int, int, int, string, string, bool)> PrintTree =
+        [&](int x, int l, int r, string prefix, string connector, bool is_last) {
+          string label = (r - l == 1)
+                             ? format("[{}] {} {}", l, infos[x].String(), tags[x].String())
+                             : format("[{}, {}) {} {}", l, r, infos[x].String(), tags[x].String());
+          oss << prefix << connector << label << '\n';
+
+          if (r - l == 1) return;
+
+          int m = (l + r) / 2;
+          int y = x + 2 * (m - l);
+
+          string next_prefix = prefix + (connector.empty() ? "" : (is_last ? "    " : "│   "));
+          PrintTree(x + 1, l, m, next_prefix, "├── ", false);
+          PrintTree(y, m, r, next_prefix, "└── ", true);
+        };
+
+    if (wrap) oss << "{\n";
+    PrintTree(0, 0, n, "", "", true);
+    if (wrap) oss << "}";
+    return oss.str();
+  }
+
+ private:
   int n;
-  vector<Info> info;
-  vector<Tag> tag;
+  vector<Info> infos;
+  vector<Tag> tags;
   Combine comb;
 
-  void build(int x, int l, int r) {
-    assert(0 <= x && x < 2 * n - 1);
-    assert(0 <= l && l < r && r <= n);
-    if (r - l == 1) {
-      info[x] = Info();
+  void Build(int x, int l, int r) {
+    if (r - l == 1)
       return;
-    }
     int m = (l + r) / 2;
     int y = x + 2 * (m - l);
-    build(x + 1, l, m);
-    build(y, m, r);
-    pull(x, l, r);
+    Build(x + 1, l, m);
+    Build(y, m, r);
+    Pull(x, l, r);
   }
 
   template <typename T>
-  void build(int x, int l, int r, const vector<T> &v) {
-    assert(0 <= x && x < 2 * n - 1);
-    assert(0 <= l && l < r && r <= n);
+  void Build(int x, int l, int r, const vector<T> &v) {
     if (r - l == 1) {
-      info[x] = v[l];
+      infos[x] = v[l];
       return;
     }
     int m = (l + r) / 2;
     int y = x + 2 * (m - l);
-    build(x + 1, l, m, v);
-    build(y, m, r, v);
-    pull(x, l, r);
+    Build(x + 1, l, m, v);
+    Build(y, m, r, v);
+    Pull(x, l, r);
   }
 
-  void push(int x, int l, int r) {
-    assert(0 <= x && x < 2 * n - 1);
-    assert(0 <= l && l < r && r <= n);
+  void Push(int x, int l, int r) {
     int m = (l + r) / 2;
     int y = x + 2 * (m - l);
-    apply(x + 1, l, m, tag[x]);
-    apply(y, m, r, tag[x]);
-    tag[x] = Tag();
+    Apply(x + 1, l, m, tags[x]);
+    Apply(y, m, r, tags[x]);
+    tags[x] = Tag();
   }
 
-  void pull(int x, int l, int r) {
-    assert(0 <= x && x < 2 * n - 1);
-    assert(0 <= l && l < r && r <= n);
+  void Pull(int x, int l, int r) {
     int m = (l + r) / 2;
     int y = x + 2 * (m - l);
-    info[x] = comb(info[x + 1], info[y]);
+    infos[x] = comb(infos[x + 1], infos[y]);
   }
 
-  void apply(int x, int l, int r, const Tag &v) {
-    assert(0 <= x && x < 2 * n - 1);
-    assert(0 <= l && l < r && r <= n);
-    info[x].Apply(l, r, v);
-    tag[x].Apply(l, r, v);
+  void Apply(int x, int l, int r, const Tag &v) {
+    infos[x].Apply(l, r, v);
+    tags[x].Apply(l, r, v);
   }
 
-  Info get(int x, int l, int r, const int a, const int b) {
-    assert(0 <= x && x < 2 * n - 1);
-    assert(0 <= l && l < r && r <= n);
-    assert(0 <= a && a < b && b <= n);
-    if (a <= l && r <= b) {
-      return info[x];
-    }
-    push(x, l, r);
+  Info Get(int x, int l, int r, const int a, const int b) {
+    if (a <= l && r <= b)
+      return infos[x];
+    Push(x, l, r);
     int m = (l + r) / 2;
     int y = x + 2 * (m - l);
     Info res{};
-    if (b <= m) {
-      res = get(x + 1, l, m, a, b);
-    } else {
-      if (a >= m) {
-        res = get(y, m, r, a, b);
-      } else {
-        res = comb(get(x + 1, l, m, a, b), get(y, m, r, a, b));
-      }
-    }
-    pull(x, l, r);
+    if (b <= m)
+      res = Get(x + 1, l, m, a, b);
+    else if (a >= m)
+      res = Get(y, m, r, a, b);
+    else
+      res = comb(Get(x + 1, l, m, a, b), Get(y, m, r, a, b));
+    Pull(x, l, r);
     return res;
   }
 
-  void modify(int x, int l, int r, const int a, const int b, const Tag &v) {
-    assert(0 <= x && x < 2 * n - 1);
-    assert(0 <= l && l < r && r <= n);
-    assert(0 <= a && a < b && b <= n);
+  void Modify(int x, int l, int r, const int a, const int b, const Tag &v) {
     if (a <= l && r <= b) {
-      apply(x, l, r, v);
+      Apply(x, l, r, v);
       return;
     }
-    push(x, l, r);
+    Push(x, l, r);
     int m = (l + r) / 2;
     int y = x + 2 * (m - l);
-    if (b <= m) {
-      modify(x + 1, l, m, a, b, v);
-    } else {
-      if (a >= m) {
-        modify(y, m, r, a, b, v);
-      } else {
-        modify(x + 1, l, m, a, b, v);
-        modify(y, m, r, a, b, v);
-      }
+    if (b <= m)
+      Modify(x + 1, l, m, a, b, v);
+    else if (a >= m)
+      Modify(y, m, r, a, b, v);
+    else {
+      Modify(x + 1, l, m, a, b, v);
+      Modify(y, m, r, a, b, v);
     }
-    pull(x, l, r);
+    Pull(x, l, r);
   }
 
-  int findFirst(int x, int l, int r, const int a, const int b,
-                const Predict &pred) {
-    assert(0 <= x && x < 2 * n - 1);
-    assert(0 <= l && l < r && r <= n);
-    assert(0 <= a && a < b && b <= n);
+  int FindFirst(int x, int l, int r, const int a, const int b, const Predict &pred) {
     if (a <= l && r <= b) {
-      if (pred(info[x])) {
-        return findFirstKnowingly(x, l, r, pred);
-      }
+      if (pred(infos[x]))
+        return FindFirstKnowingly(x, l, r, pred);
       return -1;
     }
-    push(x, l, r);
+    Push(x, l, r);
     int m = (l + r) / 2;
     int y = x + 2 * (m - l);
     int res = -1;
-    if (a < m) {
-      res = findFirst(x + 1, l, m, a, b, pred);
-    }
-    if (b >= m && res == -1) {
-      res = findFirst(y, m, r, a, b, pred);
-    }
-    pull(x, l, r);
+    if (a < m)
+      res = FindFirst(x + 1, l, m, a, b, pred);
+    if (b >= m && res == -1)
+      res = FindFirst(y, m, r, a, b, pred);
+    Pull(x, l, r);
     return res;
   }
 
-  int findFirstKnowingly(int x, int l, int r, const Predict &pred) {
-    assert(0 <= x && x < 2 * n - 1);
-    assert(0 <= l && l < r && r <= n);
-    if (r - l == 1) {
+  int FindFirstKnowingly(int x, int l, int r, const Predict &pred) {
+    if (r - l == 1)
       return l;
-    }
-    push(x, l, r);
+    Push(x, l, r);
     int m = (l + r) / 2;
     int y = x + 2 * (m - l);
-    int res;
-    if (pred(info[x + 1])) {
-      res = findFirstKnowingly(x + 1, l, m, pred);
-    } else {
-      res = findFirstKnowingly(y, m, r, pred);
-    }
-    pull(x, l, r);
-    return res;
+    return pred(infos[x + 1]) ? FindFirstKnowingly(x + 1, l, m, pred)
+                              : FindFirstKnowingly(y, m, r, pred);
   }
 
-  int findLast(int x, int l, int r, const int a, const int b,
-               const Predict &pred) {
-    assert(0 <= x && x < 2 * n - 1);
-    assert(0 <= l && l < r && r <= n);
-    assert(0 <= a && a < b && b <= n);
+  int FindLast(int x, int l, int r, const int a, const int b, const Predict &pred) {
     if (a <= l && r <= b) {
-      if (pred(info[x])) {
-        return findLastKnowningly(x, l, r, pred);
-      }
+      if (pred(infos[x]))
+        return FindLastKnowingly(x, l, r, pred);
       return n;
     }
-    push(x, l, r);
+    Push(x, l, r);
     int m = (l + r) / 2;
     int y = x + 2 * (m - l);
     int res = n;
-    if (b >= m) {
-      res = findLast(x + 1, m, r, a, b, pred);
-    }
-    if (a < m && res == n) {
-      res = findLast(y, l, r, a, b, pred);
-    }
-    pull(x, l, r);
+    if (b >= m)
+      res = FindLast(x + 1, m, r, a, b, pred);
+    if (a < m && res == n)
+      res = FindLast(y, l, m, a, b, pred);
+    Pull(x, l, r);
     return res;
   }
 
-  int findLastKnowingly(int x, int l, int r, const Predict &pred) {
-    assert(0 <= x && x < 2 * n - 1);
-    assert(0 <= l && l < r && r <= n);
-    if (r - l == 1) {
+  int FindLastKnowingly(int x, int l, int r, const Predict &pred) {
+    if (r - l == 1)
       return l;
-    }
-    push(x, l, r);
+    Push(x, l, r);
     int m = (l + r) / 2;
     int y = x + 2 * (m - l);
-    int res;
-    if (pred(info[y])) {
-      res = findLastKnowingly(y, m, r, pred);
-    } else {
-      res = findLastKnowingly(x + 1, l, m, pred);
-    }
-    pull(x, l, r);
-    return res;
+    return pred(infos[y]) ? FindLastKnowingly(y, m, r, pred)
+                          : FindLastKnowingly(x + 1, l, m, pred);
   }
-}; // struct SegmentTree
+};
 
 struct Tag {
-  // TODO
+  i64 add = 0;
+
+  Tag() = default;
+  Tag(i64 v) : add(v) {}
+  Tag &operator=(const Tag &tag) = default;
+
   void Apply(int l, int r, const Tag &v) {
-    // TODO
+    add += v.add;
+  }
+
+  string String() const {
+    return format("{{add={}}}", add);
   }
 };
 
 struct Info {
-  i64 val = 0;
+  i64 max_val = 0;
 
-  Info() : val(0) {}
-
-  Info(i64 val) : val(val) {}
-
-  Info &operator=(const Info &v) {
-    // TODO
-    return *this;
-  }
+  Info() = default;
+  Info(i64 v) : max_val(v) {}
+  Info &operator=(const Info &info) = default;
 
   void Apply(int l, int r, const Tag &v) {
-    // TODO
+    max_val += v.add;
+  }
+
+  string String() const {
+    return format("{{max={}}}", max_val);
   }
 };
+
+Info Combine(const Info &a, const Info &b) {
+  return Info(max(a.max_val, b.max_val));
+}
+
+// g++ -std=c++20 lazy_segment_tree.cpp -o test && ./test && rm test
+int main() {
+  {
+    cout << "===== Max Test 1: Init + Query =====\n";
+    vector<Info> vals;
+    for (int i = 0; i < 8; ++i) vals.emplace_back(i);
+    SegmentTree<Info, Tag> seg(vals, Combine);
+    cout << seg.String() << "\n";
+    cout << "[3, 7) max = " << seg.Get(3, 7).String() << "\n\n";
+  }
+
+  {
+    cout << "===== Max Test 2: Range Add + Query =====\n";
+    int n = 8;
+    SegmentTree<Info, Tag> seg(n, Combine);
+    seg.Modify(2, 6, Tag(5));
+    cout << seg.String() << "\n";
+    cout << "[0, 8) max = " << seg.Get(0, 8).String() << "\n";
+    cout << "[2, 6) max = " << seg.Get(2, 6).String() << "\n\n";
+  }
+
+  {
+    cout << "===== Max Test 3: Increment Prefix & Check Lazy =====\n";
+    int n = 10;
+    SegmentTree<Info, Tag> seg(n, Combine);
+    seg.Modify(0, 5, Tag(10));
+    cout << "Prefix modified:" << seg.String() << "\n ";
+    cout << "[5, 10) max = " << seg.Get(5, 10).String() << "\n";
+    cout << "[0, 5) max = " << seg.Get(0, 5).String() << "\n\n";
+  }
+
+  return 0;
+}

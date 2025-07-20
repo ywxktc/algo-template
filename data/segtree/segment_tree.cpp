@@ -4,7 +4,7 @@ using i64 = long long;
 
 template <typename Info>
 struct SegmentTree {
-public:
+ public:
   using Combine = function<Info(const Info &, const Info &)>;
   using Predict = function<bool(const Info &)>;
 
@@ -57,31 +57,31 @@ public:
 
   string String(bool wrap = true) const {
     ostringstream oss;
-    auto dfs = [&](auto &&dfs, int x, int l, int r, string prefix, string connector, bool isLast) {
-      string label = (r - l == 1)
-                         ? format("[{}] {}", l, infos[x].String())
-                         : format("[{}, {}) {}", l, r, infos[x].String());
-      oss << prefix << connector << label << '\n';
-      if (r - l == 1) {
-        return;
-      }
-      int m = (l + r) / 2;
-      int y = x + 2 * (m - l);
-      string next_prefix = prefix + (isLast ? "    " : "│   ");
-      dfs(dfs, x + 1, l, m, next_prefix, "├── ", false);
-      dfs(dfs, y, m, r, next_prefix, "└── ", true);
-    };
-    if (wrap) {
-      oss << "{\n";
-    }
-    dfs(dfs, 0, 0, n, "", "", true);
-    if (wrap) {
-      oss << "}";
-    }
+
+    function<void(int, int, int, string, string, bool)> PrintTree =
+        [&](int x, int l, int r, string prefix, string connector, bool is_right_most) {
+          string label = (r - l == 1)
+                             ? format("[{}] {}", l, infos[x].String())
+                             : format("[{}, {}) {}", l, r, infos[x].String());
+          oss << prefix << connector << label << '\n';
+
+          if (r - l == 1) return;
+
+          int m = (l + r) / 2;
+          int y = x + 2 * (m - l);
+
+          string next_prefix = prefix + (connector.empty() ? "" : (is_right_most ? "    " : "│   "));
+          PrintTree(x + 1, l, m, next_prefix, "├── ", false);
+          PrintTree(y, m, r, next_prefix, "└── ", true);
+        };
+
+    if (wrap) oss << "{\n";
+    PrintTree(0, 0, n, "", "", true);
+    if (wrap) oss << "}";
     return oss.str();
   }
 
-private:
+ private:
   int n;
   vector<Info> infos;
   Combine comb;
@@ -245,7 +245,7 @@ private:
     Pull(x, l, r);
     return res;
   }
-}; // SegmentTree
+};  // SegmentTree
 
 struct Info {
   i64 val = 0;
@@ -265,66 +265,89 @@ Info Combine(const Info &a, const Info &b) {
   return c;
 }
 
-// Usage: g++ -std=c++20 segment_tree.cpp -o segment_tree.exe && ./segment_tree.exe  && rm segment_tree.exe
+// g++ -std=c++20 segment_tree.cpp -o segment_tree.exe && ./segment_tree.exe  && rm segment_tree.exe
 int main() {
-  // [1] 默认值初始化, 每个节点都是默认值
   {
+    // [1] 默认值初始化, 每个节点都是默认值
+    cout << "===== Test 1: Default Value Initialization =====\n";
     int n = 10;
     SegmentTree<Info> seg(n, Combine);
+    cout << seg.String() << "\n";
   }
 
   {
     // [2] 数组初始化
+    cout << "===== Test 2: Initialization with Vector =====\n";
     int n = 10;
     vector<Info> infos(n);
     for (int i = 0; i < n; i++) {
       infos[i] = Info(i);
     }
     SegmentTree<Info> seg(infos, Combine);
+    cout << seg.String() << "\n";
   }
 
   {
     // [3] Combine 函数支持匿名函数
+    cout << "===== Test 3: Anonymous Combine Function =====\n";
     int n = 10;
     SegmentTree<Info> seg(n, [&](const Info &x, const Info &y) -> Info {
       Info c;
       c.val = x.val + y.val;
       return c;
     });
+    cout << seg.String() << "\n";
   }
 
   {
     // [4] 获取区间 [1,6) 结果
+    cout << "===== Test 4: Query Range [1,6) =====\n";
     int n = 10;
-    SegmentTree<Info> seg(n, [&](const Info &x, const Info &y) -> Info {
+    vector<Info> infos(n);
+    for (int i = 0; i < n; i++) {
+      infos[i] = Info(i);
+    }
+    SegmentTree<Info> seg(infos, [&](const Info &x, const Info &y) -> Info {
       Info c;
       c.val = x.val + y.val;
       return c;
     });
     auto info = seg.Get(1, 6);
-    cout << "区间[1,6)=" << info.String() << "\n\n";
+    cout << info.String() << "\n";
   }
 
   {
     // [5] 修改下标为 3 的元素
+    cout << "===== Test 5: Modify Element at Index 3 =====\n";
     int n = 10;
-    SegmentTree<Info> seg(n, [&](const Info &x, const Info &y) -> Info {
+    vector<Info> infos(n);
+    for (int i = 0; i < n; i++) {
+      infos[i] = Info(i);
+    }
+    SegmentTree<Info> seg(infos, [&](const Info &x, const Info &y) -> Info {
       Info c;
       c.val = x.val + y.val;
       return c;
     });
     seg.Modify(3, Info(9));
-    cout << "节点3值=" << seg.Get(3).String() << "\n\n";
+    cout << seg.Get(3).String() << "\n";
   }
 
   {
-    // [6] 打印线段树
+    // [6] 打印线段树结构
+    cout << "===== Test 6: Print Segment Tree Structure =====\n";
     int n = 10;
-    SegmentTree<Info> seg(n, [&](const Info &x, const Info &y) -> Info {
+    vector<Info> infos(n);
+    for (int i = 0; i < n; i++) {
+      infos[i] = Info(i);
+    }
+    SegmentTree<Info> seg(infos, [&](const Info &x, const Info &y) -> Info {
       Info c;
       c.val = x.val + y.val;
       return c;
     });
-    cout << "线段树=" << seg.String() << "\n\n";
+    cout << seg.String() << "\n";
   }
+
+  return 0;
 }
