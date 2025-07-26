@@ -68,3 +68,6 @@ constexpr int trailing_zeros(T x) {
   return std::countr_zero(x);
   // return __builtin_ctzll(x); // ← 可选 fallback
 }
+
+// 加减法和位运算关系
+// https://codeforces.com/blog/entry/94470
