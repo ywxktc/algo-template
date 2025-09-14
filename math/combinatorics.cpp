@@ -1,5 +1,9 @@
-template <typename T> struct Binom {
-private:
+#include <bits/stdc++.h>
+using namespace std;
+
+template <typename T>
+struct Binom {
+ private:
   vector<T> fact;
   vector<T> inv_fact;
 
@@ -10,7 +14,7 @@ private:
     }
   }
 
-public:
+ public:
   T operator()(int m, int n) {
     assert(m >= n);
     adaptive(m);
@@ -18,4 +22,4 @@ public:
   }
 };
 
-Binom<> C;
+Binom<int> C;
