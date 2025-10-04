@@ -4,6 +4,18 @@
 
 ## 数论
 
+**GCD**
+
+$$
+\begin{align}
+\gcd(x, y) = 
+\begin{cases}
+\gcd(x-y,y) & \operatorname{if} y \neq 0 \\
+x & \operatorname{if} y = 0
+\end{cases}
+\end{align}
+$$
+
 **模运算**
 
 $$
