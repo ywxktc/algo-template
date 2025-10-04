@@ -116,10 +116,10 @@ void DebugPrinter(const char *names, T &&head, Rest &&...tail) {
       --bracket;
     ++end;
   }
-  cerr.write(names, end - names) << " = ";
+  cerr.write(names, end - names) << "=";
   Print(head);
   if constexpr (sizeof...(tail)) {
-    cerr << " | ";
+    cerr << ", ";
     DebugPrinter(end, std::forward<Rest>(tail)...);
   } else {
     cerr << endl;

@@ -14,6 +14,14 @@ $$
 $$
 
 
+**同余简单结论**
+
+$$
+\begin{align}
+& \space a \equiv b \pmod{p} \\ 
+\Rightarrow & \space p \bigm| \left| a-b \right|
+\end{align}
+$$
 
 
 ## 组合数
