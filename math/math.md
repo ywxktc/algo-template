@@ -61,3 +61,38 @@ $$
 \binom{(c_1+c_2+\cdots+c_n)!}{c_1c_2\cdots c_n} &= \binom{c_1}{c_1} \binom{c_1 + c_2}{c_2} \cdots \binom{c_1 + c_2 + \cdots + c_n}{c_n}
 \end{align}
 $$
+
+
+## 几何
+
+**线性代数**
+
+$$
+\begin{align}
+
+\end{align}
+$$
+
+**向量**
+
+$$
+\begin{align}
+
+\vec{OA} &= (x_a, y_a) \\
+\vec{OB} &= (x_b, y_b) \\
+\vec{OC} &= (x_c, y_c) \\
+
+\\
+
+\vec{AB} & = \vec{AC} + \vec{CB}  \\
+\vec{AB} &= - \vec{BA} \\
+\vec{AB} &= \vec{OB} - \vec{OA} = (x_b-x_a,y_b-y_a) \\
+
+\\
+
+|\vec{AB}| &= \sqrt{(x_b-x_a)^2 + (y_b-y_a)^2} \\
+\vec{OA} \cdot \vec{OB} &= x_a \, x_b + y_a \, y_b \\
+\vec{OA} \times \vec{OB} &= x_a \, y_b - x_b \, y_a \\
+
+\end{align}
+$$
