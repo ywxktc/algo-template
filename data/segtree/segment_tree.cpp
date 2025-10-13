@@ -83,8 +83,8 @@ struct SegmentTree {
 
  private:
   int n;
-  vector<Info> infos;
   Combine comb;
+  vector<Info> infos;
 
   void Build(int x, int l, int r) {
     assert(0 <= x && x < 2 * n - 1);

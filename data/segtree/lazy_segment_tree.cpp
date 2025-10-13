@@ -87,9 +87,9 @@ struct SegmentTree {
 
  private:
   int n;
+  Combine comb;
   vector<Info> infos;
   vector<Tag> tags;
-  Combine comb;
 
   void Build(int x, int l, int r) {
     if (r - l == 1)
