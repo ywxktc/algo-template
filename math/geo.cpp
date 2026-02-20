@@ -49,8 +49,11 @@ struct Point {
   // 几何函数
   // ===============================
 
-  /// @brief 极角（atan2）
+  /// @brief 极角（atan2），x轴正方向逆时针旋转角度
   double Angle() const { return atan2(y, x); }
+
+  /// @brief x轴正方向顺时针旋转的角度
+  double AngleCW() const { return atan2(-y, x); }
 
   /// @brief 夹角：返回与 p 的夹角（弧度）
   double AngleBetween(const P& p) const {

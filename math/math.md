@@ -96,3 +96,11 @@ $$
 
 \end{align}
 $$
+
+**三角**
+
+$$
+\begin{align}
+
+\end{align}
+$$
