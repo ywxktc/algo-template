@@ -4,10 +4,11 @@ using namespace std;
 
 /// @brief 二维点 / 向量模板（适用于 double / long double）
 /// 常考功能：长度、叉积、点积、旋转、线段相交、点到线段距离等。
+/// @note 如果T是int类型，需要注意乘法溢出。
 template <typename T>
 struct Point {
   using P = Point;
-  T x = 0, y = 0;
+  T x = 0, y = 0, idx = 0;
 
   Point(T x = 0, T y = 0) : x(x), y(y) {}
 
@@ -30,7 +31,7 @@ struct Point {
   /// @brief 点积（内积）v·p = |v||p|cosθ
   T Dot(const P& p) const { return x * p.x + y * p.y; }
 
-  /// @brief 叉积（有向面积）v×p = |v||p|sinθ
+  /// @brief 叉积（有向面积）v×p = |v||p|sinθ, θ表示当前向量到p的旋转角度
   T Cross(const P& p) const { return x * p.y - y * p.x; }
 
   // ===============================
@@ -142,6 +143,22 @@ struct Point {
     for (int i = 0, n = v.size(); i < n; i++)
       area += v[i].Cross(v[(i + 1) % n]);
     return area / 2.0;
+  }
+
+  /// @brief 将向量分到上/下半平面，用于极坐标逆时针排序，两个平面具体划分是[0,180),[180,360)两个平面
+  static int HalfCCW(const P& p) {
+    // 0: upper half incl +x axis, 1: lower half incl -x axis
+    return p.y < 0 || (p.y == 0 && p.x < 0);
+  }
+
+  /// @brief 逆时针极角排序比较器（x轴正方向为起点），仅按极角比较（共线返回false)
+  static bool PolarLessCCW(const P& a, const P& b) {
+    int ah = HalfCCW(a), bh = HalfCCW(b);
+    if (ah != bh) {
+      return ah < bh;
+    }
+    // cross>0 => a 在 b 前（更小角）
+    return a.Cross(b) > 0;
   }
 };
 
